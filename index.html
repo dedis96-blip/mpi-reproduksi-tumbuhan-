@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Media Interaktif Reproduksi Tumbuhan</title>
+<style>
+:root{--p:#1f0276;--bg:#fff;--tx:#1b1b2f;--soft:#f1eefb;--ok:#1a8a4a;--no:#c62828;--ln:#d9d4ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--tx);line-height:1.6}
+button{font:inherit;cursor:pointer}
+.btn{min-height:48px;padding:10px 20px;border:2px solid var(--p);background:#fff;color:var(--p);border-radius:12px;font-weight:600;transition:.2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.on,.btn:active,.btn.fill{background:var(--p);color:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+:focus-visible{outline:3px solid #7a5cf0;outline-offset:2px}
+#identityGate{position:fixed;inset:0;background:linear-gradient(135deg,#f1eefb,#fff);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10;overflow:auto}
+.gate{background:#fff;border:2px solid var(--p);border-radius:20px;padding:28px;max-width:420px;width:100%;box-shadow:0 14px 40px rgba(31,2,118,.18);animation:pop .6s cubic-bezier(.2,1.4,.4,1)}
+.gate h2{margin:0 0 4px;color:var(--p)}
+label{display:block;font-weight:600;margin-top:14px}
+input[type=text],textarea,select{width:100%;padding:12px;border:2px solid var(--ln);border-radius:10px;font:inherit;margin-top:4px}
+input:focus,textarea:focus{border-color:var(--p);outline:0}
+.err{color:var(--no);font-size:.85rem;min-height:1.1em}
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:none;opacity:1}}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes sway{50%{transform:rotate(4deg)}}
+#app{display:none;min-height:100vh;flex-direction:column}
+header{background:var(--p);color:#fff;padding:20px 16px}
+header h1{margin:0 0 10px;font-size:clamp(1.3rem,4.5vw,2rem)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 48px;font-size:.88rem}
+.meta div{text-align:left}
+nav{display:flex;flex-wrap:wrap;gap:10px;padding:14px 16px;border-bottom:1px solid var(--ln);position:sticky;top:0;background:#fff;z-index:5}
+nav .btn{flex:1 1 120px}
+main{flex:1;padding:18px 16px;max-width:1000px;width:100%;margin:0 auto}
+.sec{display:none}.sec.show{display:block;animation:fade .4s}
+.card{border:1px solid var(--ln);border-radius:16px;padding:18px;margin:14px 0;background:#fff}
+.card h3,h2.t{color:var(--p);margin-top:0}
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tabs .btn{min-height:42px;padding:6px 14px;font-size:.9rem}
+.pane{display:none}.pane.show{display:block;animation:fade .35s}
+details{border:1px solid var(--ln);border-radius:12px;padding:10px 14px;margin:8px 0}
+summary{font-weight:600;color:var(--p);cursor:pointer}
+.svgbox{background:var(--soft);border-radius:14px;padding:10px;text-align:center}
+.svgbox svg{max-width:100%;height:auto}
+.part{cursor:pointer;transition:.2s}.part:hover{filter:brightness(1.2)}
+.info{background:var(--soft);border-left:5px solid var(--p);padding:10px 14px;border-radius:8px;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:.9rem}td,th{border:1px solid var(--ln);padding:8px;text-align:left}th{background:var(--soft);color:var(--p)}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.chip{display:inline-block;padding:10px 14px;border:2px solid var(--p);border-radius:10px;background:#fff;margin:4px;cursor:grab;user-select:none;touch-action:none}
+.chip.sel{background:var(--p);color:#fff}
+.zone{min-height:70px;border:2px dashed var(--p);border-radius:12px;padding:8px;background:var(--soft);transition:.2s}
+.zone.over{background:#ddd3ff;transform:scale(1.02)}
+.zone b{display:block;color:var(--p)}
+.blank{display:inline-block;min-width:90px;border-bottom:3px solid var(--p);text-align:center;color:var(--p);font-weight:700;padding:0 6px}
+.good{background:#e3f6ea!important;border-color:var(--ok)!important}.bad{background:#fde8e8!important;border-color:var(--no)!important;animation:shake .4s}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mc{aspect-ratio:1;perspective:600px;border:0;background:none;padding:0}
+.mc i{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:12px;font-style:normal;font-size:.78rem;padding:4px;text-align:center;transition:transform .5s;transform-style:preserve-3d;background:var(--p);color:#fff;font-size:1.6rem}
+.mc.f i{background:var(--soft);color:var(--p);transform:rotateY(180deg);font-size:.78rem;font-weight:600;border:2px solid var(--p)}
+.mc.m i{background:#e3f6ea;border-color:var(--ok);color:var(--ok)}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;border:2px solid var(--ln);background:#fff;border-radius:12px;padding:12px;min-height:48px}
+.opt.sel{border-color:var(--p);background:var(--soft)}
+.bar{height:10px;background:var(--ln);border-radius:9px;overflow:hidden;margin-bottom:12px}.bar div{height:100%;background:var(--p);transition:.4s}
+.score{font-size:3rem;font-weight:800;color:var(--p)}
+footer{background:var(--p);color:#fff;padding:14px 16px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;font-size:.85rem}
+.plant{animation:sway 4s ease-in-out infinite;transform-origin:bottom}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:560px){.mem{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+
+<div id="identityGate">
+ <form class="gate" id="gateForm" novalidate>
+  <h2>🌱 Selamat Datang</h2>
+  <p style="margin:0;color:#555">Isi identitasmu sebelum belajar.</p>
+  <label for="gNama">Nama lengkap</label><input type="text" id="gNama" autocomplete="name">
+  <label for="gNisn">NISN (10 digit)</label><input type="text" id="gNisn" inputmode="numeric" maxlength="10">
+  <div class="err" id="gErr"></div>
+  <label for="gKelas">Kelas</label><input type="text" id="gKelas" placeholder="contoh: XI-3">
+  <button class="btn fill" id="gGo" type="submit" disabled style="width:100%;margin-top:18px">Mulai</button>
+ </form>
+</div>
+
+<div id="app">
+<header>
+ <h1>Media Interaktif “Reproduksi Tumbuhan”</h1>
+ <div class="meta">
+  <div>Mata Pelajaran: Biologi<br>Unit: Anatomi Fisiologi Tumbuhan<br>Konsep: Reproduksi Tumbuhan</div>
+  <div>Guru: Dedi Anto S., S.Pd., M.Pd<br>Kelas: 11 SMA<br>Fase: F</div>
+ </div>
+</header>
+<nav id="menu"></nav>
+<main id="main"></main>
+<footer><span id="fUser"></span><span>© 2025 Dikembangkan oleh Dedi Anto S., S.Pd., M.Pd</span></footer>
+</div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const ls={get:k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let user=ls.get('rt_user');
+
+/* ===== IDENTITAS ===== */
+const gN=$('#gNama'),gI=$('#gNisn'),gK=$('#gKelas'),gGo=$('#gGo');
+function chk(){const okN=gN.value.trim().length>=3,okI=/^\d{10}$/.test(gI.value),okK=gK.value.trim().length>0;
+ $('#gErr').textContent=gI.value&&!okI?'NISN harus 10 digit angka.':'';gGo.disabled=!(okN&&okI&&okK)}
+[gN,gI,gK].forEach(e=>e.addEventListener('input',chk));
+gI.addEventListener('input',()=>gI.value=gI.value.replace(/\D/g,''));
+$('#gateForm').addEventListener('submit',e=>{e.preventDefault();chk();if(gGo.disabled)return;
+ user={nama:gN.value.trim(),nisn:gI.value,kelas:gK.value.trim()};ls.set('rt_user',user);enter()});
+function enter(){$('#identityGate').style.display='none';$('#app').style.display='flex';
+ $('#fUser').textContent=`👤 ${user.nama} | NISN ${user.nisn} | Kelas ${user.kelas}`;build()}
+if(user)enter();
+
+/* ===== SVG ===== */
+const svgFlower=`<svg viewBox="0 0 300 300" width="300" aria-label="Struktur bunga">
+<rect x="144" y="170" width="12" height="120" fill="#4caf50"/>
+<g class="part" data-i="Receptakulum: dasar bunga tempat organ-organ bunga melekat."><ellipse cx="150" cy="170" rx="22" ry="12" fill="#8d6e63"/></g>
+<g class="part" data-i="Sepal (kelopak): daun pelindung kuncup bunga."><path d="M128 168Q100 190 90 160Q115 165 128 168ZM172 168Q200 190 210 160Q185 165 172 168Z" fill="#43a047"/></g>
+<g class="part" data-i="Petal (mahkota): berwarna cerah untuk menarik penyerbuk."><path d="M135 150Q90 130 100 90Q135 100 140 140ZM165 150Q210 130 200 90Q165 100 160 140Z" fill="#f48fb1"/></g>
+<g class="part" data-i="Pistil (putik): organ betina = stigma, stilus, ovarium berisi bakal biji (ovul)."><rect x="146" y="70" width="8" height="85" fill="#fff176"/><circle cx="150" cy="66" r="9" fill="#ffd54f"/><ellipse cx="150" cy="148" rx="13" ry="16" fill="#ffee58" stroke="#f9a825"/></g>
+<g class="part" data-i="Stamen (benang sari): organ jantan = filamen + antera penghasil serbuk sari."><path d="M138 150L118 85M162 150L182 85" stroke="#7e57c2" stroke-width="4"/><ellipse cx="117" cy="80" rx="8" ry="12" fill="#ff7043"/><ellipse cx="183" cy="80" rx="8" ry="12" fill="#ff7043"/></g>
+</svg>`;
+const svgLifeCycle=`<svg viewBox="0 0 320 150" width="100%"><defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#1f0276"/></marker></defs>
+<g font-size="11" text-anchor="middle" fill="#1f0276"><rect x="5" y="55" width="80" height="40" rx="10" fill="#f1eefb" stroke="#1f0276"/><text x="45" y="79">Sporofit 2n</text>
+<rect x="120" y="5" width="80" height="40" rx="10" fill="#f1eefb" stroke="#1f0276"/><text x="160" y="29">Spora n</text>
+<rect x="235" y="55" width="80" height="40" rx="10" fill="#f1eefb" stroke="#1f0276"/><text x="275" y="79">Gametofit n</text>
+<rect x="120" y="105" width="80" height="40" rx="10" fill="#f1eefb" stroke="#1f0276"/><text x="160" y="129">Zigot 2n</text></g>
+<g stroke="#1f0276" stroke-width="2" fill="none" marker-end="url(#a)"><path d="M70 55L120 30"/><path d="M200 30L250 55"/><path d="M250 95L200 120"/><path d="M120 125L70 95"/></g>
+<text x="95" y="38" font-size="9" fill="#555">meiosis</text><text x="218" y="118" font-size="9" fill="#555">fertilisasi</text></svg>`;
+const svgMoss=`<svg viewBox="0 0 200 160" width="200"><g class="plant"><path d="M100 150V70" stroke="#6d4c41" stroke-width="3"/><ellipse cx="100" cy="62" rx="9" ry="14" fill="#8d6e63"/></g><g fill="#66bb6a"><ellipse cx="60" cy="150" rx="12" ry="5"/><ellipse cx="90" cy="152" rx="14" ry="5"/><ellipse cx="125" cy="150" rx="14" ry="5"/><ellipse cx="150" cy="152" rx="12" ry="5"/></g><text x="100" y="20" text-anchor="middle" font-size="11" fill="#1f0276">Lumut: sporofit (kapsul) menumpang pada gametofit</text></svg>`;
+const svgFern=`<svg viewBox="0 0 200 160" width="200"><g class="plant"><path d="M100 150Q95 80 100 30" stroke="#2e7d32" stroke-width="3" fill="none"/><g fill="#43a047"><ellipse cx="85" cy="60" rx="16" ry="5"/><ellipse cx="115" cy="75" rx="16" ry="5"/><ellipse cx="82" cy="95" rx="18" ry="5"/><ellipse cx="118" cy="110" rx="18" ry="5"/></g><g fill="#8d6e63"><circle cx="78" cy="96" r="2"/><circle cx="86" cy="96" r="2"/><circle cx="112" cy="111" r="2"/><circle cx="122" cy="111" r="2"/></g></g><text x="100" y="15" text-anchor="middle" font-size="11" fill="#1f0276">Paku: sorus di bawah daun</text></svg>`;
+const svgRunner=`<svg viewBox="0 0 220 120" width="220"><g fill="#c62828"><circle cx="30" cy="60" r="12"/><circle cx="190" cy="60" r="12"/></g><path d="M42 60Q110 20 178 60" stroke="#43a047" stroke-width="3" fill="none"/><text x="110" y="100" text-anchor="middle" font-size="11" fill="#1f0276">Stolon stroberi → tunas baru</text></svg>`;
+
+/* ===== TEORI ===== */
+const teori=`<h2 class="t">📘 Teori Reproduksi Tumbuhan</h2>
+<div class="tabs" data-t="teori"></div>
+<div class="pane show"><div class="card"><h3>Lumut & Paku: Struktur dan Fungsi Organ Reproduksi</h3>
+<div class="grid"><div class="svgbox">${svgMoss}</div><div class="svgbox">${svgFern}</div></div>
+<details open><summary>Lumut (Bryophyta)</summary><p><b>Anteridium</b> menghasilkan spermatozoid; <b>arkegonium</b> menghasilkan sel telur. Fase dominan: <b>gametofit</b> (n). Sporofit (2n) berupa seta dan kapsul sporangium yang menumpang pada gametofit. Fertilisasi membutuhkan air.</p>
+<div class="info">🌍 Kontekstual: Lumut <i>Marchantia</i> di tebing lembap; kapsul sporanya melepas spora saat kering.</div></details>
+<details><summary>Paku-pakuan (Pteridophyta)</summary><p>Fase dominan: <b>sporofit</b> (2n) dengan akar, batang (rimpang), dan daun. Daun fertil (sporofil) membawa <b>sorus</b> berisi sporangium. Spora tumbuh menjadi <b>protalium</b> (gametofit, berbentuk hati) yang memiliki anteridium & arkegonium.</p>
+<div class="info">🌍 Kontekstual: Paku sarang burung (<i>Asplenium nidus</i>) sering dijadikan tanaman hias; sorus tampak sebagai garis cokelat di bawah daun.</div></details>
+<p><b>Jaringan penting:</b> epidermis pelindung sporangium, jaringan <i>annulus</i> yang mengatur pelepasan spora, jaringan steril pada kapsul lumut.</p></div></div>
+<div class="pane"><div class="card"><h3>Reproduksi Seksual pada Tumbuhan Berbunga</h3>
+<p>👆 Klik bagian bunga untuk melihat fungsinya.</p><div class="svgbox">${svgFlower}<div class="info" id="flInfo">Pilih salah satu bagian bunga.</div></div>
+<details open><summary>Polinasi (Penyerbukan)</summary><p>Perpindahan serbuk sari dari antera ke stigma. Jenisnya: <b>autogami</b> (bunga sama), <b>geitonogami</b> (bunga berbeda, tanaman sama), <b>alogami</b> (tanaman berbeda), <b>xenogami</b> (beda individu genetik). Perantara: angin, serangga, burung, air.</p>
+<div class="info">🌍 Kontekstual: Lebah madu menyerbuki bunga rambutan; jagung diserbuki angin (tassel → rambut jagung).</div></details>
+<details><summary>Pembuahan ganda</summary><p>Serbuk sari berkecambah di stigma membentuk <b>tabung serbuk sari</b> membawa 2 sel sperma. Sperma 1 + sel telur → <b>zigot (2n)</b> → embrio. Sperma 2 + 2 inti kutub → <b>endosperma (3n)</b> sebagai cadangan makanan. Ovul → biji; ovarium → buah.</p></details>
+<table><tr><th>Proses</th><th>Hasil</th></tr><tr><td>Sperma + sel telur</td><td>Zigot 2n → embrio</td></tr><tr><td>Sperma + 2 inti kutub</td><td>Endosperma 3n</td></tr></table></div></div>
+<div class="pane"><div class="card"><h3>Reproduksi Aseksual (Vegetatif)</h3>
+<div class="svgbox">${svgRunner}</div>
+<div class="grid" style="margin-top:12px">
+<div class="info"><b>Alami</b><br>Stolon (stroberi), rimpang (jahe), umbi lapis (bawang merah), umbi batang (kentang), tunas adventif (cocor bebek), spora (paku & jamur).</div>
+<div class="info"><b>Buatan</b><br>Stek (singkong), cangkok (jeruk), okulasi (mangga), enten (alpukat), kultur jaringan (anggrek).</div></div>
+<p>Keunggulan: cepat, sifat sama dengan induk. Kelemahan: variasi genetik rendah, rentan penyakit yang sama.</p></div></div>
+<div class="pane"><div class="card"><h3>Pergiliran Keturunan (Metagenesis)</h3>
+<div class="svgbox">${svgLifeCycle}</div>
+<table><tr><th>Kelompok</th><th>Fase dominan</th><th>Catatan</th></tr><tr><td>Lumut</td><td>Gametofit (n)</td><td>Sporofit bergantung gametofit</td></tr><tr><td>Paku</td><td>Sporofit (2n)</td><td>Gametofit (protalium) mandiri, kecil</td></tr><tr><td>Tumbuhan berbiji</td><td>Sporofit (2n)</td><td>Gametofit sangat kecil, di dalam bunga</td></tr></table>
+<div class="info">Gametofit jantan berbiji = serbuk sari; gametofit betina = kantung embrio (8 inti).</div></div></div>`;
+
+/* ===== VIDEO ===== */
+const video=`<h2 class="t">🎬 Video Pembelajaran</h2><div class="card"><div style="font-size:3.5rem" class="plant">▶️</div>
+<p>Video ini membantu memahami alur reproduksi tumbuhan secara visual, mulai dari pembentukan spora/gamet, penyerbukan, hingga terbentuknya biji dan buah. Catat minimal 3 hal penting selama menonton untuk dipakai pada LKPD.</p>
+<a class="btn fill" style="display:inline-flex;align-items:center;text-decoration:none" href="https://youtu.be/FwK5zHFn-5E?si=Rx-Z7Aq05TPlAzEs" target="_blank" rel="noopener">Tonton di YouTube</a></div>`;
+
+/* ===== LKPD ===== */
+const lk=[
+["Tujuan Pembelajaran","Setelah kegiatan ini, kamu dapat: (1) menjelaskan struktur bunga & fungsinya, (2) menganalisis penyerbukan dan pembuahan ganda, (3) membandingkan reproduksi seksual dan aseksual, (4) menjelaskan pergiliran keturunan.",[]],
+["Stimulation (Pemberian Rangsangan)","Perhatikan: pohon mangga berbuah lebat setelah banyak lebah mendatangi bunganya, sementara stek singkong tumbuh menjadi tanaman baru tanpa bunga.",["Apa yang kamu amati dari kedua kejadian tersebut?","Pertanyaan apa yang muncul di benakmu?"]],
+["Problem Statement (Identifikasi Masalah)","Rumuskan masalah dari fenomena tadi.",["Tuliskan 1 rumusan masalah.","Tuliskan hipotesismu."]],
+["Data Collection (Pengumpulan Data)","Gunakan teori dan video untuk melengkapi data.",["Sebutkan 3 bagian bunga & fungsinya.","Sebutkan 2 contoh reproduksi vegetatif alami dan 2 buatan."]],
+["Data Processing (Pengolahan Data)","Olah data yang kamu kumpulkan.",["Bandingkan reproduksi seksual vs aseksual (minimal 2 perbedaan).","Mengapa endosperma bersifat triploid (3n)?"]],
+["Verification (Pembuktian)","Bandingkan hipotesismu dengan data.",["Apakah hipotesismu terbukti? Jelaskan.","Fase mana yang dominan pada lumut dan pada paku?"]],
+["Generalization (Simpulan)","Tarik simpulan dari seluruh kegiatan.",["Tuliskan simpulanmu tentang reproduksi tumbuhan."]]];
+let lkI=0;
+function lkpd(){return `<h2 class="t">📝 LKPD</h2><div class="tabs" id="lkTabs">${lk.map((a,i)=>`<button class="btn ${i==lkI?'on':''}" data-i="${i}">${i+1}</button>`).join('')}</div>
+<div class="card" id="lkBody"></div><button class="btn" id="lkSave">💾 Simpan jawaban</button> <span id="lkMsg"></span>`}
+function lkRender(){const a=lk[lkI],sv=ls.get('rt_lk')||{};
+ $('#lkBody').innerHTML=`<h3>${a[0]}</h3><p>${a[1]}</p>`+a[2].map((q,j)=>`<label>${j+1}. ${q}</label><textarea rows="3" data-k="${lkI}-${j}">${sv[lkI+'-'+j]||''}</textarea>`).join('')+
+ `<div style="margin-top:14px;display:flex;gap:8px"><button class="btn" id="lkP" ${lkI==0?'disabled':''}>◀ Sebelumnya</button><button class="btn fill" id="lkN" ${lkI==lk.length-1?'disabled':''}>Lanjut ▶</button></div>`;
+ $$('#lkTabs .btn').forEach((b,i)=>b.classList.toggle('on',i==lkI));
+ $('#lkP').onclick=()=>{lkSv();lkI--;lkRender()};$('#lkN').onclick=()=>{lkSv();lkI++;lkRender()}}
+function lkSv(){const sv=ls.get('rt_lk')||{};$$('#lkBody textarea').forEach(t=>sv[t.dataset.k]=t.value);ls.set('rt_lk',sv)}
+
+/* ===== GAMES ===== */
+const games=`<h2 class="t">🎮 Games</h2><div class="tabs" data-t="games"></div>
+<div class="pane show"><div class="card"><h3>Seret & Letakkan: Kelompokkan Ciri</h3><p>Seret setiap kartu ke kelompok yang tepat (di ponsel: ketuk kartu, lalu ketuk kotak).</p>
+<div id="dd1p"></div><div class="grid" id="dd1z"></div><p id="dd1r"></p><button class="btn" id="dd1reset">🔄 Ulangi</button></div></div>
+<div class="pane"><div class="card"><h3>Seret Kata: Lengkapi Kalimat</h3><div id="dw1p"></div><div id="dw1t"></div><p id="dw1r"></p><button class="btn" id="dw1reset">🔄 Ulangi</button></div></div>
+<div class="pane"><div class="card"><h3>Memory: Pasangkan Istilah & Fungsi</h3><p>Langkah: <b id="mvs">0</b></p><div class="mem" id="mem"></div><p id="mr"></p><button class="btn" id="memreset">🔄 Ulangi</button></div></div>`;
+const ddData=[["Lumut","Gametofit dominan"],["Lumut","Anteridium & arkegonium"],["Paku","Sporofit dominan"],["Paku","Sorus pada daun"],["Berbiji","Pembuahan ganda"],["Berbiji","Serbuk sari & kantung embrio"]];
+const dwData={w:["serbuk sari","stigma","endosperma","spora","zigot","sorus"],t:["Penyerbukan adalah jatuhnya <_0> ke <_1>.","Hasil peleburan sperma dengan dua inti kutub adalah <_2>.","Sel telur yang dibuahi menjadi <_4>.","Paku menyebarkan <_3> dari <_5> di bawah daun."],a:["serbuk sari","stigma","endosperma","spora","zigot","sorus"]};
+const memData=[["Antera","Penghasil serbuk sari"],["Stigma","Tempat serbuk sari menempel"],["Ovul","Menjadi biji"],["Stolon","Tunas merayap"],["Sorus","Kumpulan sporangium"],["Protalium","Gametofit paku"]];
+let selChip=null;
+function dragSetup(chips,zones,onDrop){
+ chips.forEach(c=>{c.draggable=true;c.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',c.id);selChip=c});
+ c.addEventListener('click',()=>{chips.forEach(x=>x.classList.remove('sel'));c.classList.add('sel');selChip=c})});
+ zones.forEach(z=>{z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('over')});z.addEventListener('dragleave',()=>z.classList.remove('over'));
+ z.addEventListener('drop',e=>{e.preventDefault();z.classList.remove('over');const c=document.getElementById(e.dataTransfer.getData('text/plain'))||selChip;if(c)onDrop(c,z)});
+ z.addEventListener('click',()=>{if(selChip)onDrop(selChip,z)})})}
+function dd1(){const p=$('#dd1p'),z=$('#dd1z');selChip=null;$('#dd1r').textContent='';
+ p.innerHTML=[...ddData].sort(()=>Math.random()-.5).map((d,i)=>`<span class="chip" id="d${i}" data-g="${d[0]}">${d[1]}</span>`).join('');
+ z.innerHTML=['Lumut','Paku','Berbiji'].map(g=>`<div class="zone" data-g="${g}"><b>${g}</b></div>`).join('');
+ dragSetup($$('.chip',p),$$('.zone',z),(c,zn)=>{zn.appendChild(c);c.classList.remove('sel');selChip=null;
+  const all=$$('#dd1z .chip');all.forEach(x=>{const ok=x.parentElement.dataset.g==x.dataset.g;x.classList.toggle('good',ok);x.classList.toggle('bad',!ok)});
+  const n=all.filter(x=>x.classList.contains('good')).length;$('#dd1r').textContent=`Benar: ${n}/6${n==6?' 🎉 Hebat!':''}`})}
+function dw1(){selChip=null;$('#dw1r').textContent='';
+ $('#dw1p').innerHTML=[...dwData.w].sort(()=>Math.random()-.5).map((w,i)=>`<span class="chip" id="w${i}">${w}</span>`).join('');
+ $('#dw1t').innerHTML=dwData.t.map(s=>`<p>${s.replace(/<_(\d)>/g,'<span class="blank zone" data-a="$1">&nbsp;</span>')}</p>`).join('');
+ const bl=$$('#dw1t .blank');dragSetup($$('#dw1p .chip'),bl,(c,z)=>{if(z.firstElementChild)$('#dw1p').appendChild(z.firstElementChild);z.textContent='';z.appendChild(c);c.classList.remove('sel');selChip=null;
+  let n=0;bl.forEach(b=>{const t=b.firstElementChild?.textContent;const ok=t===dwData.a[b.dataset.a];if(t){b.classList.toggle('good',ok);b.classList.toggle('bad',!ok)}if(ok)n++});
+  $('#dw1r').textContent=`Benar: ${n}/6${n==6?' 🎉 Hebat!':''}`})}
+function mem(){const cards=[];memData.forEach((m,i)=>{cards.push({k:i,t:m[0]},{k:i,t:m[1]})});cards.sort(()=>Math.random()-.5);
+ let first=null,lock=false,mv=0,done=0;$('#mvs').textContent=0;$('#mr').textContent='';
+ $('#mem').innerHTML=cards.map((c,i)=>`<button class="mc" data-i="${i}"><i>🌿</i></button>`).join('');
+ $$('#mem .mc').forEach(b=>b.onclick=()=>{if(lock||b.classList.contains('f'))return;const c=cards[b.dataset.i];b.classList.add('f');b.firstChild.textContent=c.t;
+  if(!first){first=b;return}mv++;$('#mvs').textContent=mv;const f=cards[first.dataset.i];
+  if(f.k===c.k){first.classList.add('m');b.classList.add('m');first=null;if(++done==6)$('#mr').textContent=`🎉 Selesai dalam ${mv} langkah!`}
+  else{lock=true;const a=first;first=null;setTimeout(()=>{[a,b].forEach(x=>{x.classList.remove('f');x.firstChild.textContent='🌿'});lock=false},900)}})}
+
+/* ===== EVALUASI ===== */
+const S=(q,o,a)=>({t:'s',q,o,a}),M=(q,o,a)=>({t:'m',q,o,a}),D=(q,items,zones,a)=>({t:'d',q,items,zones,a});
+const soal=[
+S("Organ penghasil sel telur pada lumut adalah ...",["Anteridium","Arkegonium","Sorus","Protalium"],1),
+S("Fase dominan pada lumut adalah ...",["Sporofit","Gametofit","Zigot","Embrio"],1),
+S("Kumpulan sporangium pada daun paku disebut ...",["Sorus","Anteridium","Stolon","Kapsul"],0),
+S("Gametofit paku berbentuk hati disebut ...",["Rimpang","Protalium","Seta","Stolon"],1),
+S("Bagian bunga yang menjadi tempat serbuk sari menempel adalah ...",["Antera","Stilus","Stigma","Filamen"],2),
+S("Penyerbukan pada bunga yang sama disebut ...",["Alogami","Autogami","Xenogami","Geitonogami"],1),
+S("Endosperma pada biji bersifat ...",["Haploid","Diploid","Triploid","Tetraploid"],2),
+S("Perbanyakan buatan dengan menempelkan mata tunas pada batang bawah disebut ...",["Stek","Cangkok","Okulasi","Kultur jaringan"],2),
+S("Stroberi berkembang biak vegetatif alami dengan ...",["Umbi lapis","Stolon","Rimpang","Tunas adventif"],1),
+S("Fase dominan pada tumbuhan paku adalah ...",["Gametofit","Sporofit","Protalium","Spora"],1),
+M("Pilih SEMUA yang termasuk reproduksi vegetatif alami:",["Stolon","Okulasi","Umbi lapis","Rimpang"],[0,2,3]),
+M("Pilih SEMUA bagian pistil:",["Stigma","Antera","Stilus","Ovarium"],[0,2,3]),
+M("Pilih SEMUA hasil pembuahan ganda:",["Zigot","Endosperma","Serbuk sari","Spora"],[0,1]),
+M("Pilih SEMUA ciri tumbuhan lumut:",["Fertilisasi butuh air","Sporofit dominan","Memiliki anteridium","Gametofit dominan"],[0,2,3]),
+M("Pilih SEMUA perantara penyerbukan:",["Angin","Serangga","Burung","Cahaya"],[0,1,2]),
+D("Pasangkan organ dengan kelompok:",["Arkegonium","Sorus","Ovul"],["Lumut","Paku","Berbiji"],{Arkegonium:"Lumut",Sorus:"Paku",Ovul:"Berbiji"}),
+D("Pasangkan organ dengan fungsinya:",["Antera","Petal","Ovarium"],["Penghasil serbuk sari","Penarik penyerbuk","Menjadi buah"],{Antera:"Penghasil serbuk sari",Petal:"Penarik penyerbuk",Ovarium:"Menjadi buah"}),
+D("Pasangkan ploidi dengan strukturnya:",["Zigot","Endosperma","Spora"],["n","2n","3n"],{Zigot:"2n",Endosperma:"3n",Spora:"n"}),
+D("Pasangkan perbanyakan dengan contohnya:",["Stolon","Rimpang","Umbi lapis"],["Stroberi","Jahe","Bawang merah"],{Stolon:"Stroberi",Rimpang:"Jahe","Umbi lapis":"Bawang merah"}),
+D("Pasangkan perbanyakan buatan dengan contohnya:",["Cangkok","Stek","Okulasi"],["Jeruk","Singkong","Mangga"],{Cangkok:"Jeruk",Stek:"Singkong",Okulasi:"Mangga"})];
+let ev={i:0,ans:[],started:false};
+function evIntro(){ev={i:0,ans:[],started:false};return `<h2 class="t">✅ Evaluasi</h2><div class="card"><h3>Petunjuk Pengerjaan</h3><ol>
+<li>Terdapat <b>20 soal</b>: 10 pilihan ganda tunggal, 5 seret & letakkan, 5 pilihan ganda kompleks.</li>
+<li>Satu soal ditampilkan per halaman.</li><li>Soal kompleks: pilih semua jawaban yang benar.</li>
+<li>Soal seret & letakkan: seret (atau ketuk) kartu ke kotak yang sesuai.</li>
+<li>Skor tampil di akhir dan kamu dapat mengulang.</li></ol><button class="btn fill" id="evGo">Mulai Evaluasi</button></div>`}
+function evQ(){const q=soal[ev.i],pr=((ev.i)/20*100);const cur=ev.ans[ev.i];
+ let h=`<h2 class="t">✅ Soal ${ev.i+1} dari 20</h2><div class="bar"><div style="width:${pr}%"></div></div><div class="card"><p><b>${q.q}</b></p>`;
+ if(q.t=='s')h+=q.o.map((o,i)=>`<button class="opt ${cur===i?'sel':''}" data-i="${i}">${'ABCD'[i]}. ${o}</button>`).join('');
+ if(q.t=='m')h+=q.o.map((o,i)=>`<button class="opt ${(cur||[]).includes(i)?'sel':''}" data-i="${i}">☐ ${o}</button>`).join('');
+ if(q.t=='d')h+=`<div id="eP">${q.items.map((x,i)=>`<span class="chip" id="e${i}" data-v="${x}">${x}</span>`).join('')}</div><div class="grid">${q.zones.map(z=>`<div class="zone" data-z="${z}"><b>${z}</b></div>`).join('')}</div>`;
+ h+=`</div><button class="btn" id="eN">${ev.i==19?'Selesai ▶':'Berikutnya ▶'}</button>`;$('#evBox').innerHTML=h;
+ if(q.t=='s')$$('.opt').forEach(b=>b.onclick=()=>{ev.ans[ev.i]=+b.dataset.i;$$('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel')});
+ if(q.t=='m')$$('.opt').forEach(b=>b.onclick=()=>{const s=new Set(ev.ans[ev.i]||[]);const i=+b.dataset.i;s.has(i)?s.delete(i):s.add(i);ev.ans[ev.i]=[...s];b.classList.toggle('sel');b.textContent=(s.has(i)?'☑ ':'☐ ')+q.o[i]});
+ if(q.t=='d'){ev.ans[ev.i]=ev.ans[ev.i]||{};selChip=null;dragSetup($$('.chip'),$$('.zone'),(c,z)=>{
+   [...z.querySelectorAll('.chip')].forEach(o=>$('#eP').appendChild(o));z.appendChild(c);c.classList.remove('sel');selChip=null;
+   const r={};$$('.zone .chip').forEach(x=>r[x.dataset.v]=x.parentElement.dataset.z);ev.ans[ev.i]=r})}
+ $('#eN').onclick=()=>{ev.i++;ev.i==20?evEnd():evQ()}}
+function evScore(){let s=0;soal.forEach((q,i)=>{const a=ev.ans[i];if(q.t=='s'&&a===q.a)s++;
+ if(q.t=='m'&&a&&a.length==q.a.length&&q.a.every(x=>a.includes(x)))s++;
+ if(q.t=='d'&&a&&Object.keys(q.a).every(k=>a[k]===q.a[k]))s++});return s}
+function evEnd(){const s=evScore(),n=s*5;
+ const adv=n>=80?"Pemahamanmu sangat baik. Pertahankan dan coba bantu temanmu belajar.":n>=60?"Cukup baik. Ulangi bagian pergiliran keturunan dan pembuahan ganda.":"Pelajari ulang menu Teori dan tonton Video, lalu coba Games sebelum mengulang evaluasi.";
+ ls.set('rt_eval',{...user,skor:n,benar:s,waktu:new Date().toISOString()});
+ $('#evBox').innerHTML=`<h2 class="t">🏆 Hasil Evaluasi</h2><div class="card" style="text-align:center"><div class="score">${n}</div><p>${s} dari 20 soal benar</p></div>
+ <div class="card"><table><tr><th>Nama</th><td>${user.nama}</td></tr><tr><th>NISN</th><td>${user.nisn}</td></tr><tr><th>Kelas</th><td>${user.kelas}</td></tr><tr><th>Skor</th><td>${n}</td></tr><tr><th>Saran belajar</th><td>${adv}</td></tr></table></div>
+ <button class="btn fill" id="evRe">🔄 Ulangi Evaluasi</button>`;$('#evRe').onclick=()=>{ev={i:0,ans:[]};evQ()}}
+
+/* ===== REFLEKSI ===== */
+const refl=["Saya dapat menjelaskan struktur dan fungsi bagian bunga.","Saya memahami proses pembuahan ganda.","Saya dapat membedakan reproduksi seksual dan aseksual.","Saya mampu menjelaskan pergiliran keturunan lumut, paku, dan tumbuhan berbiji.","Saya merasa media ini membantu saya belajar.","Saya ingin belajar lebih lanjut tentang reproduksi tumbuhan."];
+function reflHTML(){const sv=ls.get('rt_ref')||{};return `<h2 class="t">💭 Refleksi</h2><div class="card">${refl.map((r,i)=>`<p><b>${i+1}. ${r}</b></p>${['Ya','Sebagian','Belum'].map(o=>`<label style="display:inline-block;margin-right:14px;font-weight:400"><input type="radio" name="r${i}" value="${o}" ${sv[i]==o?'checked':''}> ${o}</label>`).join('')}`).join('')}
+<br><br><button class="btn fill" id="rfSave">Simpan refleksi</button> <span id="rfMsg"></span></div>`}
+
+/* ===== BUILD ===== */
+const menus=[["teori","📘 Teori",()=>teori],["video","🎬 Video",()=>video],["lkpd","📝 LKPD",lkpd],["games","🎮 Games",()=>games],["eval","✅ Evaluasi",()=>`<div id="evBox">${evIntro()}</div>`],["refl","💭 Refleksi",reflHTML]];
+function tabsInit(root,labels){const t=$('.tabs',root);if(!t.children.length)t.innerHTML=labels.map((l,i)=>`<button class="btn ${i?'':'on'}">${l}</button>`).join('');
+ const panes=$$('.pane',root);$$('.btn',t).forEach((b,i)=>b.onclick=()=>{$$('.btn',t).forEach(x=>x.classList.remove('on'));b.classList.add('on');panes.forEach(p=>p.classList.remove('show'));panes[i].classList.add('show')})}
+function open(k){const m=menus.find(x=>x[0]==k);$$('#menu .btn').forEach(b=>b.classList.toggle('on',b.dataset.k==k));
+ const main=$('#main');main.innerHTML=`<div class="sec show">${m[2]()}</div>`;window.scrollTo({top:0,behavior:'smooth'});
+ if(k=='teori'){tabsInit(main,['Lumut & Paku','Seksual','Aseksual','Pergiliran']);$$('.part').forEach(p=>p.onclick=()=>$('#flInfo').textContent=p.dataset.i)}
+ if(k=='lkpd'){lkRender();$('#lkTabs').onclick=e=>{const b=e.target.closest('.btn');if(b){lkSv();lkI=+b.dataset.i;lkRender()}};$('#lkSave').onclick=()=>{lkSv();$('#lkMsg').textContent='✔ Tersimpan';setTimeout(()=>$('#lkMsg').textContent='',2000)}}
+ if(k=='games'){tabsInit(main,['Seret & Letakkan','Seret Kata','Memory']);dd1();dw1();mem();$('#dd1reset').onclick=dd1;$('#dw1reset').onclick=dw1;$('#memreset').onclick=mem}
+ if(k=='eval')$('#evGo').onclick=()=>evQ();
+ if(k=='refl')$('#rfSave').onclick=()=>{const sv={};refl.forEach((r,i)=>{const c=$(`input[name=r${i}]:checked`);if(c)sv[i]=c.value});ls.set('rt_ref',sv);$('#rfMsg').textContent='✔ Refleksi tersimpan'}}
+function build(){$('#menu').innerHTML=menus.map(m=>`<button class="btn" data-k="${m[0]}">${m[1]}</button>`).join('');
+ $('#menu').onclick=e=>{const b=e.target.closest('.btn');if(b)open(b.dataset.k)};open('teori')}
+</script>
+</body>
+</html>
